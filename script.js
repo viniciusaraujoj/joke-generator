@@ -1,22 +1,23 @@
 const btn = document.querySelector('.btn');
 const joke = document.querySelector('.joke');
 
-const randomJoke = () => {
-  const req = new XMLHttpRequest();
+const getJoke = async () => {
+  try {
+    const response = await fetch('https://api.chucknorris.io/jokes/random');
 
-  req.open('GET', 'https://api.chucknorris.io/jokes/random');
-
-  req.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      const data = JSON.parse(this.responseText);
-      joke.textContent = data.value;
-    } else {
-      joke.textContent = 'Something went wrong';
+    if (!response.ok) {
+      throw new Error('Something went wrong');
     }
-  };
 
-  req.send();
+    const data = await response.json();
+    joke.innerText = data.value;
+    
+  } catch (error) {
+    joke.innerText = error;
+  }
 };
 
-document.addEventListener('DOMContentLoaded', randomJoke);
-btn.addEventListener('click', randomJoke);
+document.addEventListener('DOMContentLoaded', getJoke);
+btn.addEventListener('click', getJoke);
+
+console.log();
